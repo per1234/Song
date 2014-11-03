@@ -16,6 +16,12 @@ typedef struct CC {
     CC* list;
 } CC;
 
+// Event is used to define the contents of a pattern. They can
+// contain Notes or CC's. An event may have any number of Notes
+// and CC's associated with it in the circumstance that multiple
+// events happen concurrnetly.
+// A MIDI parser may iterate through events to queue up data to 
+// send.
 class Event {
   private:
     int ticks;
