@@ -25,19 +25,21 @@ typedef struct CC {
 class Event {
   private:
     int ticks;
-    Note* notes;
-    CC* ccs;
+    Note* notes;    // A stack implemented as a linked list
+    CC* ccs;        // Also a stack implemented as a linked list
     Event *prev, *next;
 
     void  merge(  Event*);  // merge two events if their timing overlaps
-    Note* remove( Note*);
-    CC*   remove( CC*);
+    Note* removeNote( int);
+    CC*   removeCC( int);
   public:
     Event( int, int, int, int);
     Event( int, int, int, bool);
     ~Event();
-    void insert( Event*);
+    void addNote( int, int, int, int);
+    void addCC( int, int, int, bool);
     void move( int);
+    Event* getNext();
     
     Note* getNotes();
     CC*   getCCs();

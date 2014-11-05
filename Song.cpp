@@ -1,5 +1,3 @@
-#include "Event.h"
-
 #include "Arduino.h"
 
 #include "Song.h"
@@ -13,9 +11,10 @@ Song::Song() {
     tempo = 120.0f;
     swing = 0.0f;
 
-    patterns = (Pattern**)malloc(sizeof(Pattern*) * num_patterns);
+    patterns = (Pattern**)malloc(sizeof(Pattern*) * 8);
+
     for (int i = 0; i < num_patterns; i++) {
-        patterns[i] = (Pattern*)malloc(sizeof(Pattern));
+        patterns[i] = new Pattern();
         patterns[i]->name = 'a' + i;
     }
 }
@@ -25,8 +24,7 @@ Song::Song() {
  */
 Song::~Song() {
     for (int i = 0; i < num_patterns; i++) {
-        delete patterns[i]->events;
-        free( patterns[i]);
+        delete patterns[i];
     }
     free( patterns);
 }
@@ -37,12 +35,4 @@ Song::~Song() {
  */
 Pattern* Song::getPattern(int p) {
     return patterns[p];
-}
-
-/**
- * Song::clearPattern - clears all events in a pattern
- * @p - the pattern number
- */
-void Song::clearPattern(int p) {
-    delete patterns[p]->events;
 }
