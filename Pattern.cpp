@@ -36,6 +36,18 @@ NoteEvent* Pattern::nextNote() {
 }
 
 /**
+ * Pattern::gotoNote - grabs the next note after t ticks. Works by iterating
+ *                     through the list of notes
+ * @t - tick count
+ */
+NoteEvent* Pattern::gotoNote(int t) {
+    for (NoteEvent* n = notes; n->getNext() != NULL; n = n->getNext()) {
+        if (n->getTime() < t && n->getNext()->getTime() >= t)
+            return n->getNext();
+    }
+}
+
+/**
  * Pattern::nextCC - gets the next CC. Updates iterator
  */
 CCEvent* Pattern::nextCC() {
@@ -45,7 +57,22 @@ CCEvent* Pattern::nextCC() {
 }
 
 /**
- * Pattern::addNote - Add a new note to a pattern
+ * Pattern::gotoCC - grabs the next CC after t ticks. Works by iterating
+ *                   through the list of CC's
+ * @t - tick count
+ */
+CCEvent* Pattern::gotoCC(int t) {
+    for (CCEvent* cc = ccs; cc->getNext() != NULL; cc = cc->getNext()) {
+        if (cc->getTime() < t && cc->getNext()->getTime() >= t)
+            return cc->getNext();
+    }
+}
+
+/**
+ * Pattern::addNote - Add a new note to a pattern.
+ *                    Beware - after calling this, nextNote will return the
+ *                    first note in the list. It is recommended that you call 
+ *                    'gotoNote' immediately after calling this.
  * @ticks    - the timing of the note
  * @note     - the note number (MIDI number) to add
  * @length   - the length of the note
@@ -59,13 +86,16 @@ void Pattern::addNote( int ticks, int note, int length, int velocity) {
     else {
         NoteEvent* currentStart = notes;
         notes = notes->add(ticks, note, length, velocity);
-        if (currentStart == currentNote)
-            reset();
     }
+    currentNote = notes;
 }
 
 /**
- * Pattern::addEvent - Add a new CC to a pattern
+ * Pattern::addEvent - Add a new CC to a pattern.
+ *                     Beware - after calling this, nextCC will return the
+ *                     first note in the list. It is recommended that you call
+ *                     'gotoCC' immediately after calling this.
+ *                      
  * @cc - the CC to add
  * @ticks - the timing of the CC
  */
@@ -76,9 +106,8 @@ void Pattern::addCC( int ticks, int number, int value, bool interpolate) {
     } else {
         CCEvent* currentStart = ccs;
         ccs->add(ticks, number, value, interpolate);
-        if (currentStart = currentCC)
-            reset();
     }
+    currentCC = ccs;
 }
 
 /**

@@ -35,38 +35,49 @@ CCEvent::~CCEvent() {
 }
 
 /** 
- * CCEvent::add   - Insert a new CC to the list of CC's
+ * CCEvent::add   - Insert a new CC to the list of CC's. Returns the start of
+ *                  the CC list after insertion.
  * @t           - the timing of the note in ticks
  * @number      - the CC number
  * @value       - the value of the control change
  * @interpolate - whether or not to interpolate to the next CC CCEvent
  */
 CCEvent* CCEvent::add( int t, int number, int value, bool interpolate) {
-    // If we're inserting before the first cc in our list
+    // If we're inserting before the first CC in our list
     if (t < ticks) {
         CCEvent *cc = new CCEvent(t, number, value, interpolate);
 
         cc->next = this;
         cc->prev = (CCEvent*)0;
-        
+
         prev = cc;
+
         return cc;
     }
-    // If CCEvent is the same, merge with this one
-    if (t == ticks) {
+    // If timing is the same, add to this list
+    else if (t == ticks) {
+        // check if CC already exists in this list (keyed by CC number)
+        for (CC *member = ccs; member != NULL; member = member->list) {
+            // Update the CC data
+            if (member->number == number) {
+                member->value = value;
+                member->interpolate = interpolate;
+                return this;
+            }
+        }
+
         // Make the CC
         CC* cc = (CC*)malloc(sizeof(CC));
         cc->number      = number;
         cc->value       = value;
         cc->interpolate = interpolate;
 
-        // Place in list
+        // Place at top of stack
         cc->list = ccs;
         ccs      = cc;
     }
     // Place CCEvent between this and the next if it belongs
-    else if (t > ticks &&
-        t < next->getTime()) {
+    else if (t > ticks && t < next->getTime()) {
         
         CCEvent *e = new CCEvent(t, number, value, interpolate);
 
@@ -77,8 +88,15 @@ CCEvent* CCEvent::add( int t, int number, int value, bool interpolate) {
         next = e;
     }
     // Send down the line if it belongs further
-    else if (t > next->getTime()) {
+    else if (t > ticks && next != NULL) {
         next->add(t, number, value, interpolate);
+    }
+    // Or if we're at the end of the list, insert it
+    else if (t > ticks) {
+        CCEvent *e = new CCEvent(t, number, value, interpolate);
+
+        e->prev = this;
+        next = e;
     }
 
     return this;

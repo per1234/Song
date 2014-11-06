@@ -4,13 +4,13 @@
 
 /**
  * NoteEvent::Event - initialize a new NoteEvent with a Note object
- * @ticks - where on the timeline this NoteEvent occurs
- * @note  - The note (in MIDI note numbers) of the NoteEvent
- * @length - The length of the note
+ * @t        - where on the timeline this NoteEvent occurs in ticks
+ * @note     - The note (in MIDI note numbers) of the NoteEvent
+ * @length   - The length of the note
  * @velocity - velocity of the note
  */
-NoteEvent::NoteEvent( int ticks, int note, int length, int velocity) {
-    this->ticks = ticks;
+NoteEvent::NoteEvent( int t, int note, int length, int velocity) {
+    ticks = t;
     Note *n = (Note*)malloc(sizeof(Note));
 
     n->note = note;
@@ -35,7 +35,8 @@ NoteEvent::~NoteEvent() {
 }
 
 /** 
- * NoteEvent::addNote - Insert a new note to the list of Notes
+ * NoteEvent::addNote - Insert a new note to the list of Notes. Returns the
+ *                      start of the note list after insertion.
  * @t        - the timing of the note in ticks
  * @note     - the note number (MIDI number)
  * @length   - the length of the note
@@ -53,21 +54,30 @@ NoteEvent* NoteEvent::add( int t, int note, int length, int velocity) {
 
         return n;
     }
-    // If NoteEvent is the same, merge with this one
+    // If timing is the same, add to this list
     else if (t == ticks) {
+        // check if note already exists in this list (keyed by note number)
+        for (Note *member = notes; member != NULL; member = member->list) {
+            // Update the note data
+            if (member->note == note) {
+                member->length = length;
+                member->velocity = velocity;
+                return this;
+            }
+        }
+
         // Make the note
         Note* n = (Note*)malloc(sizeof(Note));
         n->note     = note;
         n->length   = length;
         n->velocity = velocity;
 
-        // Place in list
+        // Place at top of stack
         n->list = notes;
         notes   = n;
     }
     // Place NoteEvent between this and the next if it belongs
-    else if (t > ticks &&
-        t < next->getTime()) {
+    else if (t > ticks && t < next->getTime()) {
         
         NoteEvent *e = new NoteEvent(t, note, length, velocity);
 
@@ -78,8 +88,15 @@ NoteEvent* NoteEvent::add( int t, int note, int length, int velocity) {
         next = e;
     }
     // Send down the line if it belongs further
-    else if (t > next->getTime()) {
+    else if (t > ticks && next != NULL) {
         next->add(t, note, length, velocity);
+    }
+    // Or if we're at the end of the list, insert it
+    else if (t > ticks) {
+        NoteEvent *e = new NoteEvent(t, note, length, velocity);
+
+        e->prev = this;
+        next = e;
     }
 
     return this;
