@@ -14,7 +14,7 @@ may get out of control so you may want to impose some limitations.
 
 If Note data is inserted to a list where there is already a Note with the same
 number and timing, its velocity and length data will be overwritten and no
-new Note will be added.
+new Note will be added. The same is true of CC numbers.
 
 Timing is measured in 'ticks'. This allows you to define your PPQ in your 
 application.
