@@ -91,13 +91,30 @@ void Pattern::addNote( int ticks, int note, int length, int velocity) {
 }
 
 /**
+ * Pattern::removeNote - Removes the specified note from the pattern.
+ *                       Resets the note iterator. It is recommended that you
+ *                       call 'gotoNote' immediately after calling this.
+ * @ticks - the time that the note occurs
+ * @note  - the note number
+ */
+void Pattern::removeNote( int ticks, int note) {
+    if (notes == 0)
+        return;
+    else
+        notes = notes->remove(ticks, note);
+
+    currentNote = notes;
+}
+
+/**
  * Pattern::addEvent - Add a new CC to a pattern.
  *                     Beware - after calling this, nextCC will return the
  *                     first note in the list. It is recommended that you call
  *                     'gotoCC' immediately after calling this.
- *                      
- * @cc - the CC to add
- * @ticks - the timing of the CC
+ * @ticks       - the timing of the CC
+ * @number      - the CC number to add
+ * @value       - the CC value to add
+ * @interpolate - whether this CC interpolates or not
  */
 void Pattern::addCC( int ticks, int number, int value, bool interpolate) {
     if (ccs == 0) {
@@ -107,6 +124,22 @@ void Pattern::addCC( int ticks, int number, int value, bool interpolate) {
         CCEvent* currentStart = ccs;
         ccs->add(ticks, number, value, interpolate);
     }
+    currentCC = ccs;
+}
+
+/**
+ * Pattern::removeCC - Removes the specified CC from the pattern.
+ *                     Resets the cc iterator. It is recommended that you
+ *                     call 'gotoCC' immediately after calling this.
+ * @ticks - the time of the CC to remove
+ * @cc    - the CC number to remove
+ */
+Pattern::removeCC( int ticks, int cc) {
+    if (ccs == 0)
+        return;
+    else
+        ccs = ccs->remove(ticks, cc);
+
     currentCC = ccs;
 }
 

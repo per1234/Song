@@ -139,37 +139,38 @@ CC* CCEvent::getCCs() {
 }
 
 /**
- * CCEvent::merge - merge another CCEvent into this one
- * @e - the CCEvent to be merged
- */
-void CCEvent::merge( CCEvent* e) {
-
-}
-
-/**
  * CCEvent::remove - remove a CC from the list of CC's in this CCEvent
  * @n - the CC number to be removed
  */
-CC* CCEvent::remove( int n) {
-    // Iterate through CCs to see if we have a match
-    for (CC *cc = ccs; cc != 0; cc = cc->list) {
-        // Our first case is if the first cc is the one we're looking for
-        if (cc->number == n) {
-            CC *retCC = cc;
-            ccs = retCC->list;
-            return retCC;
-        }
-        // Our second is everything else
-        else if (cc->list != 0) {
-            if (cc->list->number == n) {
-                CC *retCC = cc->list;
-                cc->list = retCC->list;
-                return retCC;
+CCEvent* CCEvent::remove( int t, int number) {
+    // Is it this time?
+    if (t == ticks) {
+        // iterate through cc list to see if we have a match
+        for (CC* cc = ccs; cc != NULL; cc = cc->list) {
+            // This should only happen for the first cc in the list
+            if (cc->number == number) {
+                ccs = cc->list;
+                free(cc);
+
+                // If this event is empty, delete this event.
+                if (ccs == 0) {
+                    CCEvent* returnCC = next;
+                    delete this;
+                    return returnCC;
+                }
+            }
+            // This should happen for the rest of the notes
+            else if (cc->list != 0 && cc->list->number == number) {
+                CC* deleteMe = cc->list;
+                cc->list = cc->list->list;
+                free(deleteMe);
+                return this;
             }
         }
+    } else if (t > ticks) {
+        next = next->remove(t, number);
     }
-
-    return (CC*)0;
+    return this;
 }
 
 /**

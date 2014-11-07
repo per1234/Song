@@ -27,7 +27,9 @@ class Pattern {
     CCEvent* gotoCC(int);
 
     void addNote( int, int, int, int);
+    void removeNote(int, int);
     void addCC( int, int, int, bool);
+    void removeCC(int, int);
     void setFollow(Pattern*);
     void reset();
     void clear();

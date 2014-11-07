@@ -19,12 +19,12 @@ class CCEvent {
     CC* ccs;        // Also a stack implemented as a linked list
     CCEvent *prev, *next;
 
-    void merge( CCEvent*);  // merge two events if their timing overlaps
-    CC*  remove( int);
+    void merge(CCEvent*);
   public:
     CCEvent( int, int, int, bool);
     ~CCEvent();
     CCEvent* add( int, int, int, bool);
+    CCEvent* remove(int, int);
     void move( int);
     CCEvent* getNext();
     
