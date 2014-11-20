@@ -18,14 +18,11 @@ class CCEvent {
     int ticks;
     CC* ccs;        // Also a stack implemented as a linked list
     CCEvent *prev, *next;
-
-    void merge(CCEvent*);
   public:
     CCEvent( int, int, int, bool);
     ~CCEvent();
     CCEvent* add( int, int, int, bool);
     CCEvent* remove(int, int);
-    void move( int);
     CCEvent* getNext();
     
     CC*   getCCs();

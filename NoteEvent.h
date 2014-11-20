@@ -18,14 +18,11 @@ class NoteEvent {
     int ticks;
     Note* notes;    // A stack implemented as a linked list
     NoteEvent *prev, *next;
-
-    void merge(Note* );
   public:
     NoteEvent( int, int, int, int);
     ~NoteEvent();
     NoteEvent* add( int, int, int, int);
     NoteEvent* remove( int, int);
-    void move( int);
     NoteEvent* getNext();
     
     Note* getNotes();

@@ -23,13 +23,22 @@ class Pattern {
 
     NoteEvent* nextNote();
     NoteEvent* gotoNote(int);
-    CCEvent* nextCC();
-    CCEvent* gotoCC(int);
-
+    NoteEvent* getNote(int);
+    Note*      getNote(int, int);
+    
     void addNote( int, int, int, int);
     void removeNote(int, int);
+    void moveNote( int, int, int);
+
+    CCEvent* nextCC();
+    CCEvent* gotoCC(int);
+    CCEvent* getCC(int);
+    CC*      getCC(int, int);
+
     void addCC( int, int, int, bool);
     void removeCC(int, int);
+    void moveCC( int, int, int);
+
     void setFollow(Pattern*);
     void reset();
     void clear();

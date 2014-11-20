@@ -103,28 +103,6 @@ CCEvent* CCEvent::add( int t, int number, int value, bool interpolate) {
 }
 
 /**
- * CCEvent::move - move the CCEvent on the timeline. Takes care of merging
- * shifting in the linked list
- * @ticks - absolute position to move to
- */
-void CCEvent::move(int ticks) {
-    // move backward
-    if (ticks < this->ticks) {
-        if (ticks < next->ticks) {
-            this->ticks = ticks;
-        } else if (ticks == next->ticks) {
-            next->merge(this);
-        } else {
-            // Iterate backward
-        }
-    } else if (ticks > this->ticks) {
-        if (ticks > prev->ticks) {
-            this->ticks = ticks;
-        }
-    }
-}
-
-/**
  * CCEvent::getNext - gets the next CCEvent
  */
 CCEvent* CCEvent::getNext() {

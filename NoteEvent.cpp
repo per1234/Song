@@ -140,28 +140,6 @@ NoteEvent* NoteEvent::remove(int t, int note) {
 }
 
 /**
- * NoteEvent::move - move the NoteEvent on the timeline. Takes care of merging
- * shifting in the linked list
- * @ticks - absolute position to move to
- */
-void NoteEvent::move(int ticks) {
-    // move backward
-    if (ticks < this->ticks) {
-        if (ticks < next->ticks) {
-            this->ticks = ticks;
-        } else if (ticks == next->ticks) {
-            next->merge(this);
-        } else {
-            // Iterate backward
-        }
-    } else if (ticks > this->ticks) {
-        if (ticks > prev->ticks) {
-            this->ticks = ticks;
-        }
-    }
-}
-
-/**
  * NoteEvent::getNext - gets the next NoteEvent
  */
 NoteEvent* NoteEvent::getNext() {
@@ -173,40 +151,6 @@ NoteEvent* NoteEvent::getNext() {
  */
 Note* NoteEvent::getNotes() {
     return this->notes;
-}
-
-/**
- * NoteEvent::merge - merge another NoteEvent into this one
- * @e - the NoteEvent to be merged
- */
-void NoteEvent::merge( NoteEvent* e) {
-
-}
-
-/**
- * NoteEvent::removeNote - remove a note from the list of notes in this NoteEvent
- * @n - the note to be removed
- */
-Note* NoteEvent::remove( int n) {
-    // Iterate through notes to see if we have a match
-    for (Note *note = notes; note != 0; note = note->list) {
-        // Our first case is if the first note is the one we're looking for
-        if (note->note == n) {
-            Note *retNote = note;
-            notes = retNote->list;
-            return retNote;
-        }
-        // Our second is everything else
-        else if (note->list != 0) {
-            if (note->list->note == n) {
-                Note *retNote = note->list;
-                note->list = retNote->list;
-                return retNote;
-            }
-        }
-    }
-
-    return (Note*)0;
 }
 
 /**
