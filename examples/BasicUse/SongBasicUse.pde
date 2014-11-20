@@ -41,17 +41,23 @@ void createPatterns() {
   p->addNote(0, 32, 0, 0);
   p->addNote(10, 30, 0, 0);
   p->addNote(5, 2, 0, 0);
+  // Test moving note
+  p->moveNote(5, 15, 2);
   // Test inserting at the beginning
   p = song->getPattern(1);
   p->addNote(10, 10, 0, 0);
   p->addNote(5, 5, 0, 0);
   p->addNote(1, 1, 0, 0);
+  // Test removing
+  p->removeNote(10, 10);
+  p->removeNote(1, 1);
   // Test layered insertion
   p = song->getPattern(2);
   p->addNote(25, 10, 0, 0);
   p->addNote(10, 20, 0, 0);
   p->addNote(25, 11, 0, 0);
-  p->addNote(25, 10, 35, 0);
+  // Test merging
+  p->addNote(10, 20, 35, 0);
 }
 
 void printPattern(Pattern* p) {
